@@ -47,23 +47,23 @@ public class Servicios {
 	        // Crea una instancia de BacktrackingAssignment
 	        BacktrackingAssignment asignador = new BacktrackingAssignment();
 	        // Llama al método para encontrar las mejores asignaciones
-	        List<Map<Procesador, List<Tarea>>> mejoresAsignaciones = asignador.encontrarMejoresAsignaciones(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
+	       Map<Procesador, List<Tarea>> mejoresAsignaciones = asignador.encontrarMejoresAsignaciones(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
 
 	        // Imprime las mejores asignaciones encontradas
-	        for (Map<Procesador, List<Tarea>> asignacion : mejoresAsignaciones) {
-	            System.out.println("Asignación:");
-	            for (Map.Entry<Procesador, List<Tarea>> entry : asignacion.entrySet()) {
-	                System.out.println("Procesador: " + entry.getKey().getId());
-	                System.out.println("Tareas asignadas:");
-	                for (Tarea tarea : entry.getValue()) {
-	                    System.out.println("Nombre: " + tarea.getNombre());
-	                    System.out.println("Tiempo: " + tarea.getTiempo());
-	                    System.out.println("Es crítica: " + tarea.isCritica());
-	                    System.out.println("Prioridad: " + tarea.getPrioridad());
-	                }
-	            }
-	            System.out.println();
-	        }
+//	        for (Map<Procesador, List<Tarea>> asignacion : mejoresAsignaciones) {
+//	            System.out.println("Asignación:");
+//	            for (Map.Entry<Procesador, List<Tarea>> entry : asignacion.entrySet()) {
+//	                System.out.println("Procesador: " + entry.getKey().getId());
+//	                System.out.println("Tareas asignadas:");
+//	                for (Tarea tarea : entry.getValue()) {
+//	                    System.out.println("Nombre: " + tarea.getNombre());
+//	                    System.out.println("Tiempo: " + tarea.getTiempo());
+//	                    System.out.println("Es crítica: " + tarea.isCritica());
+//	                    System.out.println("Prioridad: " + tarea.getPrioridad());
+//	                }
+//	            }
+//	            System.out.println();
+//	        }
 	        
 	}
 	

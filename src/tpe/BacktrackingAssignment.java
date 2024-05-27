@@ -7,18 +7,21 @@ import java.util.Map;
 
 public class BacktrackingAssignment {
 
-    private List<Map<Procesador, List<Tarea>>> mejoresAsignaciones;
+    private Map<Procesador, List<Tarea>> mejoresAsignaciones;
     private int mejorTiempo;
 
     public BacktrackingAssignment() {
-        mejoresAsignaciones = new ArrayList<>();
+        mejoresAsignaciones = new HashMap<>();
         mejorTiempo = 120;
     }
 
-    public List<Map<Procesador, List<Tarea>>> encontrarMejoresAsignaciones(List<Procesador> procesadores, List<Tarea> tareas, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
+    public Map<Procesador, List<Tarea>> encontrarMejoresAsignaciones(List<Procesador> procesadores, List<Tarea> tareas, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
         // Inicializa la llamada recursiva con asignaciones vacías y sin asignar tareas
         backtrack(new HashMap<>(), procesadores, new ArrayList<>(tareas), limiteTareasCriticas, limiteTiempoNoRefrigerado);
+        System.out.println("asignacion actual"+ mejoresAsignaciones);
+
         return mejoresAsignaciones;
+        
     }
 
     private void backtrack(Map<Procesador, List<Tarea>> asignacionActual, List<Procesador> procesadores, List<Tarea> tareasRestantes, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
@@ -29,11 +32,18 @@ public class BacktrackingAssignment {
             // Verifica si esta asignación es la mejor hasta ahora
             if (tiempoFinal < mejorTiempo) {
                 mejoresAsignaciones.clear();
-                mejoresAsignaciones.add(new HashMap<>(asignacionActual));
+                mejoresAsignaciones.putAll(asignacionActual);
                 mejorTiempo = tiempoFinal;
-            } else if (tiempoFinal == mejorTiempo) {
-                mejoresAsignaciones.add(new HashMap<>(asignacionActual));
+             	System.out.println("asignacion actual"+ mejoresAsignaciones);
+             	System.out.println("el mejor tiempo es "+ mejorTiempo);
+             	return;
             }
+             else if (tiempoFinal == mejorTiempo) {
+                mejoresAsignaciones.putAll(asignacionActual);
+            	//System.out.println("asignacion actual"+ mejoresAsignaciones);
+
+            }
+            
             return;
         }
 
@@ -45,20 +55,20 @@ public class BacktrackingAssignment {
             // Verifica restricciones antes de asignar
             if (verificarRestricciones(asignacionActual, procesador, tarea, limiteTareasCriticas, limiteTiempoNoRefrigerado)) {
                 // Asigna la tarea al procesador actual
-            	System.out.println("asignacion actual"+ asignacionActual);
                 asignarTarea(asignacionActual, procesador, tarea);
 
                 // Elimina la tarea asignada de la lista de tareas restantes
                 tareasRestantes.remove(tarea);
 
                 // Llama recursivamente con la nueva asignación y las tareas restantes actualizadas
-                backtrack(new HashMap<>(asignacionActual), procesadores, new ArrayList<>(tareasRestantes), limiteTareasCriticas, limiteTiempoNoRefrigerado);
+                backtrack(asignacionActual, procesadores, tareasRestantes, limiteTareasCriticas, limiteTiempoNoRefrigerado);
 
                 // Deshace la asignación para probar con otro procesador
                 desasignarTarea(asignacionActual, procesador, tarea);
 
                 // Agrega nuevamente la tarea a la lista de tareas restantes para la siguiente iteración
-                tareasRestantes.add(0, tarea);
+            tareasRestantes.add(0, tarea);
+
             }
         }
     }
@@ -85,6 +95,7 @@ public class BacktrackingAssignment {
     private void asignarTarea(Map<Procesador, List<Tarea>> asignacion, Procesador procesador, Tarea tarea) {
     	asignacion.putIfAbsent(procesador, new ArrayList<>());
     	asignacion.get(procesador).add(tarea);
+
     }
 
     private void desasignarTarea(Map<Procesador, List<Tarea>> asignacion, Procesador procesador, Tarea tarea) {
