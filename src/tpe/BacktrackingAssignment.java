@@ -1,90 +1,87 @@
 package tpe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class BacktrackingAssignment {
 
-    private Map<Procesador, List<Tarea>> mejoresAsignaciones;
+    private List<Procesador> mejoresAsignaciones;
     private int mejorTiempo;
 
     public BacktrackingAssignment() {
-        mejoresAsignaciones = new HashMap<>();
+        mejoresAsignaciones = new ArrayList<>();
         mejorTiempo = 120;
     }
 
-    public Map<Procesador, List<Tarea>> encontrarMejoresAsignaciones(List<Procesador> procesadores, List<Tarea> tareas, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
-        // Inicializa la llamada recursiva con asignaciones vacías y sin asignar tareas
-        backtrack(new HashMap<>(), procesadores, new ArrayList<>(tareas), limiteTareasCriticas, limiteTiempoNoRefrigerado);
-        System.out.println("asignacion actual"+ mejoresAsignaciones);
-
-        return mejoresAsignaciones;
+    public List<Procesador> encontrarMejoresAsignaciones(List<Procesador> procesadores, List<Tarea> tareas, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
+        backtrack(new ArrayList<>(), procesadores, new ArrayList<>(tareas), limiteTareasCriticas, limiteTiempoNoRefrigerado);
         
+        return mejoresAsignaciones;
     }
 
-    private void backtrack(Map<Procesador, List<Tarea>> asignacionActual, List<Procesador> procesadores, List<Tarea> tareasRestantes, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
-        // Verifica si se ha completado una asignación
+    private void backtrack(List<Procesador> asignacionActual, List<Procesador> procesadores, List<Tarea> tareasRestantes, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
         if (tareasRestantes.isEmpty()) {
-            // Calcula el tiempo final de ejecución para la asignación actual
             int tiempoFinal = calcularTiempoFinal(asignacionActual);
-            // Verifica si esta asignación es la mejor hasta ahora
             if (tiempoFinal < mejorTiempo) {
-                mejoresAsignaciones.clear();
-                mejoresAsignaciones.putAll(asignacionActual);
+                mejoresAsignaciones = new ArrayList<>(asignacionActual);
                 mejorTiempo = tiempoFinal;
-             	System.out.println("asignacion actual"+ mejoresAsignaciones);
-             	System.out.println("el mejor tiempo es "+ mejorTiempo);
-             	return;
+            } else if (tiempoFinal == mejorTiempo) {
+                // No necesitas hacer nada adicional en este caso
             }
-             else if (tiempoFinal == mejorTiempo) {
-                mejoresAsignaciones.putAll(asignacionActual);
-            	//System.out.println("asignacion actual"+ mejoresAsignaciones);
-
-            }
-            
             return;
         }
 
-        // Selecciona una tarea para asignar
         Tarea tarea = tareasRestantes.get(0);
 
-        // Prueba asignar la tarea a cada procesador disponible
         for (Procesador procesador : procesadores) {
-            // Verifica restricciones antes de asignar
             if (verificarRestricciones(asignacionActual, procesador, tarea, limiteTareasCriticas, limiteTiempoNoRefrigerado)) {
-                // Asigna la tarea al procesador actual
                 asignarTarea(asignacionActual, procesador, tarea);
 
-                // Elimina la tarea asignada de la lista de tareas restantes
                 tareasRestantes.remove(tarea);
 
-                // Llama recursivamente con la nueva asignación y las tareas restantes actualizadas
                 backtrack(asignacionActual, procesadores, tareasRestantes, limiteTareasCriticas, limiteTiempoNoRefrigerado);
 
-                // Deshace la asignación para probar con otro procesador
                 desasignarTarea(asignacionActual, procesador, tarea);
 
-                // Agrega nuevamente la tarea a la lista de tareas restantes para la siguiente iteración
-            tareasRestantes.add(0, tarea);
-
+                tareasRestantes.add(0, tarea);
             }
         }
     }
 
+    private boolean verificarRestricciones(List<Procesador> asignacion, Procesador procesador, Tarea tarea, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
+        // Primera restricción: Ningún procesador podrá ejecutar más de 2 tareas críticas.
+        int totalTareasCriticas=0;
+    	if (tarea.isCritica()) {
+        	 for (Procesador procActual : asignacion) {
+        	        for (Tarea tareaActual : procActual.getTareas()) {
+        	            if (tareaActual.isCritica()) {
+        	                totalTareasCriticas++;
+        	            }
+        	        }
+        	        if (totalTareasCriticas >= limiteTareasCriticas) {
+        	        	return false;
+        	        }
+        	 }
+    	}
+        // Segunda restricción: Los procesadores no refrigerados no podrán dedicar más de X tiempo de ejecución a las tareas asignadas.
+        if (!procesador.refrigerado()) {
+        	int tiempoAsignado=0;
+        	 for (Procesador procActual : asignacion) {
+     	        for (Tarea tareaActual : procActual.getTareas()) {
+     	                tiempoAsignado+=tareaActual.getTiempo();
+     	            }
+     	        }
+//            int tiempoAsignado = asignacion.stream()
+//                    .filter(p -> !p.equals(procesador)) // Excluye el tiempo del procesador actual
+//                    .flatMap(p -> p.getTareas().stream())
+//                    .mapToInt(Tarea::getTiempo)
+//                    .sum();
 
-
-    private boolean verificarRestricciones(Map<Procesador, List<Tarea>> asignacion, Procesador procesador, Tarea tarea, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
-        // Verifica restricción de máximo de tareas críticas por procesador
-        if (tarea.isCritica() && asignacion.containsKey(procesador) && asignacion.get(procesador).stream().filter(Tarea::isCritica).count() >= limiteTareasCriticas) {
-            return false;
-        }
-
-        // Verifica restricción de tiempo para procesadores no refrigerados
-        if (!procesador.refrigerado() && asignacion.containsKey(procesador)) {
-            int tiempoAsignado = asignacion.get(procesador).stream().mapToInt(Tarea::getTiempo).sum() + tarea.getTiempo();
-            if (tiempoAsignado > limiteTiempoNoRefrigerado) {
+            if (tiempoAsignado + tarea.getTiempo() > limiteTiempoNoRefrigerado) {
                 return false;
             }
         }
@@ -92,25 +89,61 @@ public class BacktrackingAssignment {
         return true;
     }
 
-    private void asignarTarea(Map<Procesador, List<Tarea>> asignacion, Procesador procesador, Tarea tarea) {
-    	asignacion.putIfAbsent(procesador, new ArrayList<>());
-    	asignacion.get(procesador).add(tarea);
-
+    private void asignarTarea(List<Procesador> asignacion, Procesador procesador, Tarea tarea) {
+        System.out.println("Asignando tarea " + tarea.getId() + " al procesador " + procesador.getId());
+        Procesador procesadorEnAsignacion = asignacion.stream()
+                                                      .filter(p -> p.equals(procesador))
+                                                      .findFirst()
+                                                      .orElse(null);
+        if (procesadorEnAsignacion != null) {
+            // Si el procesador ya está en la asignación, clonémoslo antes de agregar la tarea
+            Procesador procesadorClonado = new Procesador(procesadorEnAsignacion.getId(), 
+                                                           procesadorEnAsignacion.getCodigo(), 
+                                                           procesadorEnAsignacion.isRefrigerado(), 
+                                                           procesadorEnAsignacion.getAnio());
+            procesadorClonado.getTareas().addAll(procesadorEnAsignacion.getTareas());
+            procesadorClonado.getTareas().add(tarea);
+            asignacion.remove(procesadorEnAsignacion); // Eliminamos el procesador original de la asignación
+            asignacion.add(procesadorClonado); // Agregamos el procesador clonado con la nueva tarea
+        } else {
+            // Si el procesador no está en la asignación, simplemente agreguemos el nuevo procesador con la tarea
+            Procesador nuevoProcesador = new Procesador(procesador.getId(), 
+                                                         procesador.getCodigo(), 
+                                                         procesador.isRefrigerado(), 
+                                                         procesador.getAnio());
+            nuevoProcesador.getTareas().add(tarea);
+            asignacion.add(nuevoProcesador);
+        }
     }
 
-    private void desasignarTarea(Map<Procesador, List<Tarea>> asignacion, Procesador procesador, Tarea tarea) {
-        if (asignacion.containsKey(procesador)) {
-            asignacion.get(procesador).remove(tarea);
-            if (asignacion.get(procesador).isEmpty()) {
-                asignacion.remove(procesador);
+    private void desasignarTarea(List<Procesador> asignacion, Procesador procesador, Tarea tarea) {
+        Procesador procesadorEnAsignacion = asignacion.stream()
+                                                      .filter(p -> p.equals(procesador))
+                                                      .findFirst()
+                                                      .orElse(null);
+        if (procesadorEnAsignacion != null) {
+            // Si el procesador está en la asignación, clonémoslo antes de eliminar la tarea
+            Procesador procesadorClonado = new Procesador(procesadorEnAsignacion.getId(), 
+                                                           procesadorEnAsignacion.getCodigo(), 
+                                                           procesadorEnAsignacion.isRefrigerado(), 
+                                                           procesadorEnAsignacion.getAnio());
+            procesadorClonado.getTareas().addAll(procesadorEnAsignacion.getTareas());
+            procesadorClonado.getTareas().remove(tarea);
+            asignacion.remove(procesadorEnAsignacion); // Eliminamos el procesador original de la asignación
+            if (!procesadorClonado.getTareas().isEmpty()) {
+                // Si el procesador clonado aún tiene tareas, lo volvemos a agregar a la asignación
+                asignacion.add(procesadorClonado);
             }
         }
     }
 
-    private int calcularTiempoFinal(Map<Procesador, List<Tarea>> asignacion) {
+
+
+    private int calcularTiempoFinal(List<Procesador> asignacion) {
         int tiempoFinal = 0;
-        for (List<Tarea> tareas : asignacion.values()) {
-            tiempoFinal = Math.max(tiempoFinal, tareas.stream().mapToInt(Tarea::getTiempo).sum());
+        for (Procesador procesador : asignacion) {
+            int tiempoProcesador = procesador.getTareas().stream().mapToInt(Tarea::getTiempo).sum();
+            tiempoFinal = Math.max(tiempoFinal, tiempoProcesador);
         }
         return tiempoFinal;
     }

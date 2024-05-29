@@ -47,8 +47,9 @@ public class Servicios {
 	        // Crea una instancia de BacktrackingAssignment
 	        BacktrackingAssignment asignador = new BacktrackingAssignment();
 	        // Llama al método para encontrar las mejores asignaciones
-	       Map<Procesador, List<Tarea>> mejoresAsignaciones = asignador.encontrarMejoresAsignaciones(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
+	        List<Procesador> mejoresAsignaciones = asignador.encontrarMejoresAsignaciones(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
 
+	        	System.out.println("las mejores asignaciones son: " +mejoresAsignaciones);
 	        // Imprime las mejores asignaciones encontradas
 //	        for (Map<Procesador, List<Tarea>> asignacion : mejoresAsignaciones) {
 //	            System.out.println("Asignación:");
