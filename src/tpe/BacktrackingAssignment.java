@@ -14,7 +14,7 @@ public class BacktrackingAssignment {
 
     public BacktrackingAssignment() {
         mejoresAsignaciones = new ArrayList<>();
-        mejorTiempo = 120;
+        mejorTiempo = 200;
     }
 
     public List<Procesador> encontrarMejoresAsignaciones(List<Procesador> procesadores, List<Tarea> tareas, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
@@ -27,7 +27,8 @@ public class BacktrackingAssignment {
         if (tareasRestantes.isEmpty()) {
             int tiempoFinal = calcularTiempoFinal(asignacionActual);
             if (tiempoFinal < mejorTiempo) {
-                mejoresAsignaciones = new ArrayList<>(asignacionActual);
+//                mejoresAsignaciones = new ArrayList<>(asignacionActual);
+                mejoresAsignaciones.addAll(asignacionActual);
                 mejorTiempo = tiempoFinal;
             } else if (tiempoFinal == mejorTiempo) {
                 // No necesitas hacer nada adicional en este caso
@@ -62,7 +63,7 @@ public class BacktrackingAssignment {
         	                totalTareasCriticas++;
         	            }
         	        }
-        	        if (totalTareasCriticas >= limiteTareasCriticas) {
+        	        if (totalTareasCriticas > limiteTareasCriticas) {
         	        	return false;
         	        }
         	 }
@@ -70,11 +71,14 @@ public class BacktrackingAssignment {
         // Segunda restricción: Los procesadores no refrigerados no podrán dedicar más de X tiempo de ejecución a las tareas asignadas.
         if (!procesador.refrigerado()) {
         	int tiempoAsignado=0;
-        	 for (Procesador procActual : asignacion) {
-     	        for (Tarea tareaActual : procActual.getTareas()) {
+        	Procesador procActual=getProcesador(asignacion,procesador);
+        	if (procActual==null) {
+        		procActual=procesador;
+        	}
+        	for (Tarea tareaActual : procActual.getTareas()) {
      	                tiempoAsignado+=tareaActual.getTiempo();
      	            }
-     	        }
+     	       
 //            int tiempoAsignado = asignacion.stream()
 //                    .filter(p -> !p.equals(procesador)) // Excluye el tiempo del procesador actual
 //                    .flatMap(p -> p.getTareas().stream())
@@ -85,12 +89,19 @@ public class BacktrackingAssignment {
                 return false;
             }
         }
-
         return true;
     }
+    private Procesador getProcesador(List<Procesador> asignacion,Procesador procesador) {
+    	for (Procesador current: asignacion) {
+    		if(current.equals(procesador))
+    			return current;
+    	}
+		return null;
+
+	}
+   
 
     private void asignarTarea(List<Procesador> asignacion, Procesador procesador, Tarea tarea) {
-        System.out.println("Asignando tarea " + tarea.getId() + " al procesador " + procesador.getId());
         Procesador procesadorEnAsignacion = asignacion.stream()
                                                       .filter(p -> p.equals(procesador))
                                                       .findFirst()
@@ -113,6 +124,7 @@ public class BacktrackingAssignment {
                                                          procesador.getAnio());
             nuevoProcesador.getTareas().add(tarea);
             asignacion.add(nuevoProcesador);
+            
         }
     }
 
@@ -139,11 +151,18 @@ public class BacktrackingAssignment {
 
 
 
+
     private int calcularTiempoFinal(List<Procesador> asignacion) {
         int tiempoFinal = 0;
+        int mayorTiempo=0;
+       
         for (Procesador procesador : asignacion) {
-            int tiempoProcesador = procesador.getTareas().stream().mapToInt(Tarea::getTiempo).sum();
-            tiempoFinal = Math.max(tiempoFinal, tiempoProcesador);
+        	for(Tarea tarea:procesador.getTareas()) {
+        		tiempoFinal+=tarea.getTiempo();
+        	}
+        	if(mayorTiempo<tiempoFinal) {
+        		mayorTiempo=tiempoFinal;
+        	}
         }
         return tiempoFinal;
     }
