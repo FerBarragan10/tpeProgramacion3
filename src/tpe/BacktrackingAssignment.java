@@ -30,27 +30,27 @@ public class BacktrackingAssignment {
 //                mejoresAsignaciones = new ArrayList<>(asignacionActual);
                 mejoresAsignaciones.addAll(asignacionActual);
                 mejorTiempo = tiempoFinal;
-            } else if (tiempoFinal == mejorTiempo) {
-                // No necesitas hacer nada adicional en este caso
-            }
-            return;
-        }
-
-        Tarea tarea = tareasRestantes.get(0);
-
-        for (Procesador procesador : procesadores) {
-            if (verificarRestricciones(asignacionActual, procesador, tarea, limiteTareasCriticas, limiteTiempoNoRefrigerado)) {
-                asignarTarea(asignacionActual, procesador, tarea);
-
-                tareasRestantes.remove(tarea);
-
-                backtrack(asignacionActual, procesadores, tareasRestantes, limiteTareasCriticas, limiteTiempoNoRefrigerado);
-
-                desasignarTarea(asignacionActual, procesador, tarea);
-
-                tareasRestantes.add(0, tarea);
             }
         }
+        else {
+        	  Tarea tarea = tareasRestantes.get(0);
+
+              for (Procesador procesador : procesadores) {
+                  if (verificarRestricciones(asignacionActual, procesador, tarea, limiteTareasCriticas, limiteTiempoNoRefrigerado)) {
+                      asignarTarea(asignacionActual, procesador, tarea);
+
+                      tareasRestantes.remove(tarea);
+
+                      backtrack(asignacionActual, procesadores, tareasRestantes, limiteTareasCriticas, limiteTiempoNoRefrigerado);
+
+                      desasignarTarea(asignacionActual, procesador, tarea);
+
+                      tareasRestantes.add(0, tarea);
+                  }
+              }
+        }
+
+      
     }
 
     private boolean verificarRestricciones(List<Procesador> asignacion, Procesador procesador, Tarea tarea, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
@@ -114,6 +114,8 @@ public class BacktrackingAssignment {
                                                            procesadorEnAsignacion.getAnio());
             procesadorClonado.getTareas().addAll(procesadorEnAsignacion.getTareas());
             procesadorClonado.getTareas().add(tarea);
+            procesadorClonado.getTiempoActual();
+
             asignacion.remove(procesadorEnAsignacion); // Eliminamos el procesador original de la asignación
             asignacion.add(procesadorClonado); // Agregamos el procesador clonado con la nueva tarea
         } else {
@@ -123,9 +125,12 @@ public class BacktrackingAssignment {
                                                          procesador.isRefrigerado(), 
                                                          procesador.getAnio());
             nuevoProcesador.getTareas().add(tarea);
+            nuevoProcesador.getTiempoActual();
             asignacion.add(nuevoProcesador);
+
             
         }
+        
     }
 
     private void desasignarTarea(List<Procesador> asignacion, Procesador procesador, Tarea tarea) {
@@ -140,6 +145,7 @@ public class BacktrackingAssignment {
                                                            procesadorEnAsignacion.isRefrigerado(), 
                                                            procesadorEnAsignacion.getAnio());
             procesadorClonado.getTareas().addAll(procesadorEnAsignacion.getTareas());
+            procesadorClonado.getTiempoActual();
             procesadorClonado.getTareas().remove(tarea);
             asignacion.remove(procesadorEnAsignacion); // Eliminamos el procesador original de la asignación
             if (!procesadorClonado.getTareas().isEmpty()) {
@@ -150,19 +156,27 @@ public class BacktrackingAssignment {
     }
 
 
+  
+    
 
 
     private int calcularTiempoFinal(List<Procesador> asignacion) {
         int tiempoFinal = 0;
-        int mayorTiempo=0;
        
         for (Procesador procesador : asignacion) {
-        	for(Tarea tarea:procesador.getTareas()) {
-        		tiempoFinal+=tarea.getTiempo();
+        	if(tiempoFinal==0) {
+        		tiempoFinal=procesador.getTiempoActual();
         	}
-        	if(mayorTiempo<tiempoFinal) {
-        		mayorTiempo=tiempoFinal;
+        	else {
+        		if(tiempoFinal<procesador.getTiempoActual()) {
+            		tiempoFinal=procesador.getTiempoActual();
+
+        		}
         	}
+//        	for(Tarea tarea:procesador.getTareas()) {
+//        		tiempoFinal+=tarea.getTiempo();
+//        	}
+        
         }
         return tiempoFinal;
     }

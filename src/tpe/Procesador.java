@@ -9,6 +9,7 @@ public class Procesador {
  private String codigo;
  private boolean refrigerado;
  private int anio;
+ private int tiempoActual;
  private List<Tarea> tareas;
 
  public Procesador(String id, String codigo, boolean refrigerado,int anio) {
@@ -16,6 +17,7 @@ public class Procesador {
      this.codigo = codigo;
      this.refrigerado = refrigerado;
      this.anio=anio;
+     this.tiempoActual=0;
      this.tareas=new LinkedList<>();
  }
 
@@ -104,6 +106,18 @@ public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
     Procesador that = (Procesador) o;
     return Objects.equals(id, that.id);
+}
+
+
+
+
+
+public int getTiempoActual() {
+	tiempoActual=0;
+	for(Tarea task:tareas) {
+		tiempoActual=task.getTiempo();
+	}
+	return tiempoActual;
 }
 
 }
