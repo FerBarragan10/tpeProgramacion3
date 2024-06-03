@@ -56,42 +56,34 @@ public class BacktrackingAssignment {
     private boolean verificarRestricciones(List<Procesador> asignacion, Procesador procesador, Tarea tarea, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
         // Primera restricción: Ningún procesador podrá ejecutar más de 2 tareas críticas.
         int totalTareasCriticas=0;
+    	Procesador procActual=getProcesador(asignacion,procesador);
+    	if (procActual==null) {
+    		procActual=procesador;
+    	}
     	if (tarea.isCritica()) {
-        	 for (Procesador procActual : asignacion) {
-        	        for (Tarea tareaActual : procActual.getTareas()) {
-        	            if (tareaActual.isCritica()) {
-        	                totalTareasCriticas++;
-        	            }
-        	        }
-        	        if (totalTareasCriticas > limiteTareasCriticas) {
-        	        	return false;
-        	        }
-        	 }
+    		
+    		totalTareasCriticas=procActual.cantidadTareasCriticas();
+	        if (totalTareasCriticas > limiteTareasCriticas) {
+	        	return false;
+	        }
+//        	 }
     	}
         // Segunda restricción: Los procesadores no refrigerados no podrán dedicar más de X tiempo de ejecución a las tareas asignadas.
         if (!procesador.refrigerado()) {
         	int tiempoAsignado=0;
-        	Procesador procActual=getProcesador(asignacion,procesador);
-        	if (procActual==null) {
-        		procActual=procesador;
-        	}
+        	
         	for (Tarea tareaActual : procActual.getTareas()) {
      	                tiempoAsignado+=tareaActual.getTiempo();
-     	            }
-     	       
-//            int tiempoAsignado = asignacion.stream()
-//                    .filter(p -> !p.equals(procesador)) // Excluye el tiempo del procesador actual
-//                    .flatMap(p -> p.getTareas().stream())
-//                    .mapToInt(Tarea::getTiempo)
-//                    .sum();
-
+     	    }
             if (tiempoAsignado + tarea.getTiempo() > limiteTiempoNoRefrigerado) {
                 return false;
             }
         }
         return true;
     }
-    private Procesador getProcesador(List<Procesador> asignacion,Procesador procesador) {
+  
+
+	private Procesador getProcesador(List<Procesador> asignacion,Procesador procesador) {
     	for (Procesador current: asignacion) {
     		if(current.equals(procesador))
     			return current;
@@ -173,9 +165,7 @@ public class BacktrackingAssignment {
 
         		}
         	}
-//        	for(Tarea tarea:procesador.getTareas()) {
-//        		tiempoFinal+=tarea.getTiempo();
-//        	}
+
         
         }
         return tiempoFinal;

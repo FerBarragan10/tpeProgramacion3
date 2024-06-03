@@ -113,11 +113,22 @@ public boolean equals(Object o) {
 
 
 public int getTiempoActual() {
-	tiempoActual=0;
+	int tiempoActual=0;
 	for(Tarea task:tareas) {
 		tiempoActual=task.getTiempo();
 	}
 	return tiempoActual;
+}
+
+
+public int cantidadTareasCriticas() {
+	int cantidad=0;
+	for(Tarea task:tareas) {
+		if(task.isCritica()) {
+			cantidad++;
+		}
+	}
+	return cantidad;
 }
 
 }
