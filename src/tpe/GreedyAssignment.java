@@ -1,4 +1,4 @@
-package m;
+package tpe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,32 +34,8 @@ public class GreedyAssignment {
 	    private void greedy(List<Procesador> asignacionActual, List<Procesador> procesadores, List<Tarea> tareasRestantes, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
 	    	tareasRestantes.sort(Comparator.comparing(Tarea::getTiempo).reversed());
 	    	
-	    	if (tareasRestantes.isEmpty()) {
-	            int tiempoFinal = calcularTiempoFinal(asignacionActual);
-	            if (tiempoFinal < mejorTiempo) {
-//	                mejoresAsignaciones = new ArrayList<>(asignacionActual);
-	                mejoresAsignaciones.addAll(asignacionActual);
-	                mejorTiempo = tiempoFinal;
-	            } 
-	                // No necesitas hacer nada adicional en este caso
-	            
-
-//	        Tarea tarea = tareasRestantes.get(0);
-//
-//	        for (Procesador procesador : procesadores) {
-//	            if (verificarRestricciones(asignacionActual, procesador, tarea, limiteTareasCriticas, limiteTiempoNoRefrigerado)) {
-//	                asignarTarea(asignacionActual, procesador, tarea);
-//
-//	                tareasRestantes.remove(tarea);
-//
-//	                greedy(asignacionActual, procesadores, tareasRestantes, limiteTareasCriticas, limiteTiempoNoRefrigerado);
-//	            }
-//	        }
-//	        
-//	            }
-//	    	}
-	    	} else{  
-	            	
+	    	  
+	            	while(!tareasRestantes.isEmpty()) {
 	    	        for (Procesador procesador : procesadores) {
 	    	        	for (int j = 0; j < tareasRestantes.size(); j++) {
 	    	        		Tarea tarea = tareasRestantes.get(j);
@@ -69,16 +45,24 @@ public class GreedyAssignment {
 	    	        			
 	    	        			tareasRestantes.remove(tarea);
 	    	        			
-	    	        			greedy(asignacionActual, procesadores, tareasRestantes, limiteTareasCriticas, limiteTiempoNoRefrigerado);
+//	    	        			greedy(asignacionActual, procesadores, tareasRestantes, limiteTareasCriticas, limiteTiempoNoRefrigerado);
 	    	        		}
 	    				}
 	    	
 	    	
 	    	        }
 	            }
+	            	if (tareasRestantes.isEmpty()) {
+	    	            int tiempoFinal = calcularTiempoFinal(asignacionActual);
+	    	            if (tiempoFinal < mejorTiempo) {
+	    	                mejoresAsignaciones.addAll(asignacionActual);
+	    	                mejorTiempo = tiempoFinal;
+	    	            } 
+	    	            
+	    	    	} 
 	    	
 	    }
-
+	    
 	    private boolean verificarRestricciones(List<Procesador> asignacion, Procesador procesador, Tarea tarea, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
 	        // Primera restricción: Ningún procesador podrá ejecutar más de 2 tareas críticas.
 	        int totalTareasCriticas=0;
@@ -110,7 +94,7 @@ public class GreedyAssignment {
 //	                    .mapToInt(Tarea::getTiempo)
 //	                    .sum();
 	        	
-	            if (procActual.getTiempo() + tarea.getTiempo() > limiteTiempoNoRefrigerado) {
+	            if (procActual.getTiempoActual() + tarea.getTiempo() > limiteTiempoNoRefrigerado) {
 	                return false;
 	            }
 	        }
@@ -185,10 +169,10 @@ public class GreedyAssignment {
 	       
 	        for (Procesador procesador : asignacion) {
 	        	if(tiempoFinal==0){
-	        		tiempoFinal = procesador.getTiempo();
+	        		tiempoFinal = procesador.getTiempoActual();
 	        	}else{
-	        		if(tiempoFinal<procesador.getTiempo()){
-	        			tiempoFinal = procesador.getTiempo();
+	        		if(tiempoFinal<procesador.getTiempoActual()){
+	        			tiempoFinal = procesador.getTiempoActual();
 	        		}
 	        	}
 //	        	for(Tarea tarea:procesador.getTareas()) {
