@@ -42,7 +42,7 @@ public class Servicios {
 		
 		
 		  int limiteTareasCriticas = 2; // Define el límite de tareas críticas por procesador
-	        int limiteTiempoNoRefrigerado = 160; // Define el límite de tiempo para procesadores no refrigerados
+	        int limiteTiempoNoRefrigerado = 100; // Define el límite de tiempo para procesadores no refrigerados
 
 	        // Crea una instancia de BacktrackingAssignment
 	        BacktrackingAssignment asignador = new BacktrackingAssignment();
