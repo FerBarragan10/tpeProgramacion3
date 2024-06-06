@@ -42,7 +42,7 @@ public class Servicios {
 		
 		
 		  int limiteTareasCriticas = 2; // Define el límite de tareas críticas por procesador
-	        int limiteTiempoNoRefrigerado = 160; // Define el límite de tiempo para procesadores no refrigerados
+	        int limiteTiempoNoRefrigerado = 100; // Define el límite de tiempo para procesadores no refrigerados
 
 	        // Crea una instancia de BacktrackingAssignment
 	        BacktrackingAssignment asignador = new BacktrackingAssignment();
@@ -50,22 +50,15 @@ public class Servicios {
 	        List<Procesador> mejoresAsignaciones = asignador.encontrarMejoresAsignaciones(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
 
 	        	System.out.println("las mejores asignaciones son: " +mejoresAsignaciones);
-	        // Imprime las mejores asignaciones encontradas
-//	        for (Map<Procesador, List<Tarea>> asignacion : mejoresAsignaciones) {
-//	            System.out.println("Asignación:");
-//	            for (Map.Entry<Procesador, List<Tarea>> entry : asignacion.entrySet()) {
-//	                System.out.println("Procesador: " + entry.getKey().getId());
-//	                System.out.println("Tareas asignadas:");
-//	                for (Tarea tarea : entry.getValue()) {
-//	                    System.out.println("Nombre: " + tarea.getNombre());
-//	                    System.out.println("Tiempo: " + tarea.getTiempo());
-//	                    System.out.println("Es crítica: " + tarea.isCritica());
-//	                    System.out.println("Prioridad: " + tarea.getPrioridad());
-//	                }
-//	            }
-//	            System.out.println();
-//	        }
-	        
+	        	
+	        	
+	        	
+		        GreedyAssignment asignadorGreddy = new GreedyAssignment();
+		        // Llama al método para encontrar las mejores asignaciones
+		        List<Procesador> mejorAsignacion= asignadorGreddy.asginarGreedy(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
+
+		        	System.out.println("las mejor asignacion en greedy es : " +mejorAsignacion);
+	      
 	}
 	
 	

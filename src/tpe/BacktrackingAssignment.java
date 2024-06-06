@@ -11,6 +11,7 @@ public class BacktrackingAssignment {
 
     private List<Procesador> mejoresAsignaciones;
     private int mejorTiempo;
+    int cantTareasCriticasMaximas=0;
 
     public BacktrackingAssignment() {
         mejoresAsignaciones = new ArrayList<>();
@@ -18,80 +19,80 @@ public class BacktrackingAssignment {
     }
 
     public List<Procesador> encontrarMejoresAsignaciones(List<Procesador> procesadores, List<Tarea> tareas, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
-        backtrack(new ArrayList<>(), procesadores, new ArrayList<>(tareas), limiteTareasCriticas, limiteTiempoNoRefrigerado);
+    	cantTareasCriticasMaximas=(cantidadMaximaTareasCriticas(procesadores)*2)+1;
+  
+    	backtrack(new ArrayList<>(), procesadores, new ArrayList<>(tareas), limiteTareasCriticas, limiteTiempoNoRefrigerado,cantTareasCriticasMaximas);
         
         return mejoresAsignaciones;
     }
 
-    private void backtrack(List<Procesador> asignacionActual, List<Procesador> procesadores, List<Tarea> tareasRestantes, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
-        if (tareasRestantes.isEmpty()) {
-            int tiempoFinal = calcularTiempoFinal(asignacionActual);
-            if (tiempoFinal < mejorTiempo) {
-//                mejoresAsignaciones = new ArrayList<>(asignacionActual);
-                mejoresAsignaciones.addAll(asignacionActual);
-                mejorTiempo = tiempoFinal;
+    private void backtrack(List<Procesador> asignacionActual, List<Procesador> procesadores, List<Tarea> tareasRestantes, int limiteTareasCriticas, int limiteTiempoNoRefrigerado,int cantTareasCriticasMaximas) {
+    	if(tareasRestantes.size() < cantTareasCriticasMaximas) {
+    		if (tareasRestantes.isEmpty()) {
+                int tiempoFinal = calcularTiempoFinal(asignacionActual);
+                if (tiempoFinal < mejorTiempo) {
+//                    mejoresAsignaciones = new ArrayList<>(asignacionActual);
+                    mejoresAsignaciones.addAll(asignacionActual);
+                    mejorTiempo = tiempoFinal;
+                }
             }
-        }
-        else {
-        	  Tarea tarea = tareasRestantes.get(0);
+            else {
+            	  Tarea tarea = tareasRestantes.get(0);
 
-              for (Procesador procesador : procesadores) {
-                  if (verificarRestricciones(asignacionActual, procesador, tarea, limiteTareasCriticas, limiteTiempoNoRefrigerado)) {
-                      asignarTarea(asignacionActual, procesador, tarea);
+                  for (Procesador procesador : procesadores) {
+                      if (verificarRestricciones(asignacionActual, procesador, tarea, limiteTareasCriticas, limiteTiempoNoRefrigerado)) {
+                          asignarTarea(asignacionActual, procesador, tarea);
 
-                      tareasRestantes.remove(tarea);
+                          tareasRestantes.remove(tarea);
 
-                      backtrack(asignacionActual, procesadores, tareasRestantes, limiteTareasCriticas, limiteTiempoNoRefrigerado);
+                          backtrack(asignacionActual, procesadores, tareasRestantes, limiteTareasCriticas, limiteTiempoNoRefrigerado,cantTareasCriticasMaximas);
 
-                      desasignarTarea(asignacionActual, procesador, tarea);
+                          desasignarTarea(asignacionActual, procesador, tarea);
 
-                      tareasRestantes.add(0, tarea);
+                          tareasRestantes.add(0, tarea);
+                      }
                   }
-              }
-        }
-
+            }
+	
+    	}
+    	else {
+    		System.out.println("no existe solucion para backtracking");
+    	}
+    	
       
     }
 
     private boolean verificarRestricciones(List<Procesador> asignacion, Procesador procesador, Tarea tarea, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
         // Primera restricción: Ningún procesador podrá ejecutar más de 2 tareas críticas.
         int totalTareasCriticas=0;
+    	Procesador procActual=getProcesador(asignacion,procesador);
+    	if (procActual==null) {
+    		procActual=procesador;
+    	}
     	if (tarea.isCritica()) {
-        	 for (Procesador procActual : asignacion) {
-        	        for (Tarea tareaActual : procActual.getTareas()) {
-        	            if (tareaActual.isCritica()) {
-        	                totalTareasCriticas++;
-        	            }
-        	        }
-        	        if (totalTareasCriticas > limiteTareasCriticas) {
-        	        	return false;
-        	        }
-        	 }
+    		
+    		totalTareasCriticas=procActual.cantidadTareasCriticas();
+	        if (totalTareasCriticas > limiteTareasCriticas) {
+	        	return false;
+	        }
+//        	 }
     	}
         // Segunda restricción: Los procesadores no refrigerados no podrán dedicar más de X tiempo de ejecución a las tareas asignadas.
         if (!procesador.refrigerado()) {
         	int tiempoAsignado=0;
-        	Procesador procActual=getProcesador(asignacion,procesador);
-        	if (procActual==null) {
-        		procActual=procesador;
-        	}
+        	
         	for (Tarea tareaActual : procActual.getTareas()) {
      	                tiempoAsignado+=tareaActual.getTiempo();
-     	            }
-     	       
-//            int tiempoAsignado = asignacion.stream()
-//                    .filter(p -> !p.equals(procesador)) // Excluye el tiempo del procesador actual
-//                    .flatMap(p -> p.getTareas().stream())
-//                    .mapToInt(Tarea::getTiempo)
-//                    .sum();
-
+     	    }
             if (tiempoAsignado + tarea.getTiempo() > limiteTiempoNoRefrigerado) {
                 return false;
             }
         }
         return true;
     }
-    private Procesador getProcesador(List<Procesador> asignacion,Procesador procesador) {
+  
+
+	private Procesador getProcesador(List<Procesador> asignacion,Procesador procesador) {
     	for (Procesador current: asignacion) {
     		if(current.equals(procesador))
     			return current;
@@ -156,7 +157,9 @@ public class BacktrackingAssignment {
     }
 
 
-  
+    private int cantidadMaximaTareasCriticas(List<Procesador>procesadores) {
+		return procesadores.size();
+    }
     
 
 
@@ -173,9 +176,7 @@ public class BacktrackingAssignment {
 
         		}
         	}
-//        	for(Tarea tarea:procesador.getTareas()) {
-//        		tiempoFinal+=tarea.getTiempo();
-//        	}
+
         
         }
         return tiempoFinal;
