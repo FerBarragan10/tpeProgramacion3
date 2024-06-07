@@ -115,7 +115,7 @@ public boolean equals(Object o) {
 public int getTiempoActual() {
 	int tiempoActual=0;
 	for(Tarea task:tareas) {
-		tiempoActual=task.getTiempo();
+		tiempoActual += task.getTiempo();
 	}
 	return tiempoActual;
 }

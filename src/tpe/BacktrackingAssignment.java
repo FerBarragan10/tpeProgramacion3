@@ -12,7 +12,7 @@ public class BacktrackingAssignment {
     private List<Procesador> mejoresAsignaciones;
     private int mejorTiempo;
     int cantTareasCriticasMaximas=0;
-
+    int cantTareasMaximas=0;
     public BacktrackingAssignment() {
         mejoresAsignaciones = new ArrayList<>();
         mejorTiempo = 200;
@@ -20,14 +20,17 @@ public class BacktrackingAssignment {
 
     public List<Procesador> encontrarMejoresAsignaciones(List<Procesador> procesadores, List<Tarea> tareas, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
     	cantTareasCriticasMaximas=(cantidadMaximaTareasCriticas(procesadores)*2)+1;
-  
+    	
+    	if(cantTareasCriticasMaximas>cantTareasMaximas(tareas)){
     	backtrack(new ArrayList<>(), procesadores, new ArrayList<>(tareas), limiteTareasCriticas, limiteTiempoNoRefrigerado,cantTareasCriticasMaximas);
-        
+    	}else{
+			System.out.println("no existe una solucion en greedy");
+    	}
         return mejoresAsignaciones;
     }
 
     private void backtrack(List<Procesador> asignacionActual, List<Procesador> procesadores, List<Tarea> tareasRestantes, int limiteTareasCriticas, int limiteTiempoNoRefrigerado,int cantTareasCriticasMaximas) {
-    	if(tareasRestantes.size() < cantTareasCriticasMaximas) {
+   
     		if (tareasRestantes.isEmpty()) {
                 int tiempoFinal = calcularTiempoFinal(asignacionActual);
                 if (tiempoFinal < mejorTiempo) {
@@ -54,10 +57,7 @@ public class BacktrackingAssignment {
                   }
             }
 	
-    	}
-    	else {
-    		System.out.println("no existe solucion para backtracking");
-    	}
+    	
     	
       
     }
@@ -180,5 +180,15 @@ public class BacktrackingAssignment {
         
         }
         return tiempoFinal;
+    }
+    
+    private int cantTareasMaximas(List<Tarea> tareas){
+    	int contador=0;
+    	for(Tarea t : tareas){
+    		if(t.isCritica()){
+    			contador++;
+    		}
+    	}
+    	return contador;
     }
 }

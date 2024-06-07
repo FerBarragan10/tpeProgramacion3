@@ -47,19 +47,23 @@ public class Servicios {
 	        // Crea una instancia de BacktrackingAssignment
 	        BacktrackingAssignment asignador = new BacktrackingAssignment();
 	        // Llama al método para encontrar las mejores asignaciones
-	        List<Procesador> mejoresAsignaciones = asignador.encontrarMejoresAsignaciones(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
-
-	        	System.out.println("las mejores asignaciones son: " +mejoresAsignaciones);
-	        	
+	        
+//	        List<Procesador> mejoresAsignaciones = asignador.encontrarMejoresAsignaciones(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
+//
+//	        	System.out.println("las mejores asignaciones son: " +mejoresAsignaciones);
+//	        	
 	        	
 	        	
 		        GreedyAssignment asignadorGreddy = new GreedyAssignment();
 		        // Llama al método para encontrar las mejores asignaciones
+		        
 		        List<Procesador> mejorAsignacion= asignadorGreddy.asginarGreedy(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
 
-		        	System.out.println("las mejor asignacion en greedy es : " +mejorAsignacion);
+		        System.out.println("las mejor asignacion en greedy es : " +mejorAsignacion);
 	      
 	}
+	
+	
 	
 	
 	
