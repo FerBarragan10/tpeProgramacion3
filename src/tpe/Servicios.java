@@ -22,9 +22,7 @@ public class Servicios {
 	    private LinkedList<Tarea> listaTareasCriticas;
 	    private LinkedList<Tarea> listaTareasNoCriticas;
 
-	    /*
-     * Expresar la complejidad temporal del constructor.
-     */
+	    
 	public Servicios(String pathProcesadores, String pathTareas){
 		CSVReader reader = new CSVReader();
         this.tareas = new HashMap<>();
@@ -32,34 +30,29 @@ public class Servicios {
         this.listaTareasCriticas=new LinkedList<>();
         this.listaTareasNoCriticas=new LinkedList<>();
 
-//		reader.readProcessors(pathProcesadores);
+
        reader.readTasks(pathTareas,this.tareas,listaTareasCriticas,listaTareasNoCriticas);
 		reader.readProcessors(pathProcesadores,this.procesadores);
-//        this.tareas = reader.readTasks(pathTareas);
-		
-		
-		
-		
-		
-		  int limiteTareasCriticas = 2; // Define el límite de tareas críticas por procesador
-	        int limiteTiempoNoRefrigerado = 100; // Define el límite de tiempo para procesadores no refrigerados
+
+
+		  int limiteTareasCriticas = 2; // Define el limite de tareas criticas por procesador
+	      int limiteTiempoNoRefrigerado = 100; // Define el limite de tiempo para procesadores no refrigerados
 
 	        // Crea una instancia de BacktrackingAssignment
-	        BacktrackingAssignment asignador = new BacktrackingAssignment();
-	        // Llama al método para encontrar las mejores asignaciones
+	      BacktrackingAssignment asignador = new BacktrackingAssignment();
+	        // Llama al metodo para encontrar las mejores asignaciones
 	        
-//	        List<Procesador> mejoresAsignaciones = asignador.encontrarMejoresAsignaciones(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
-//
-//	        	System.out.println("las mejores asignaciones son: " +mejoresAsignaciones);
-//	        	
-	        	
-	        	
-		        GreedyAssignment asignadorGreddy = new GreedyAssignment();
-		        // Llama al método para encontrar las mejores asignaciones
-		        
-		        List<Procesador> mejorAsignacion= asignadorGreddy.asginarGreedy(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
+	      List<Procesador> mejoresAsignaciones = asignador.encontrarMejoresAsignaciones(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
 
-		        System.out.println("las mejor asignacion en greedy es : " +mejorAsignacion);
+	      System.out.println("las mejores asignaciones son: " +mejoresAsignaciones);
+	        	
+	        // Crea una instancia de GreedyAssignment
+		  GreedyAssignment asignadorGreddy = new GreedyAssignment();
+		    // Llama al metodo para encontrar las mejores asignaciones
+		        
+		  List<Procesador> mejorAsignacion= asignadorGreddy.asginarGreedy(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
+
+		  System.out.println("las mejor asignacion en greedy es : " +mejorAsignacion);
 	      
 	}
 	
@@ -69,33 +62,9 @@ public class Servicios {
 	
 	
 	
-	 public void mostrarDatos() {
-//	        System.out.println("Procesadores:");
-//	    
-//	            for (Entry<String, Procesador> entry : procesadores.entrySet()) {
-//	                System.out.println("Id: " + entry.getKey());
-//	                Procesador procesador = entry.getValue();
-//	                System.out.println("Codigo: " + procesador.getCodigo());
-//	                System.out.println("refrigerado: " + procesador.refrigerado());
-//	                System.out.println("Año: " + procesador.getAnio());
-//	                // Agrega aquí la impresión de otros atributos del procesador si es necesario
-//	            }
-	            
-	            
+	 public void mostrarDatos() {   
 	            System.out.println("Tareas criticas:");
-	    	    
-//	            for (Entry<String, Tarea> entry : tareas.entrySet()) {
-//	                System.out.println("Id: " + entry.getKey());
-//	                Tarea tarea = entry.getValue();
-//	                System.out.println("Nombre: " + tarea.getNombre());
-//	                System.out.println("Tiempo: " + tarea.getTiempo());
-//	                System.out.println("Critica: " + tarea.isCritica());
-//	                System.out.println("Prioridad: " + tarea.getPrioridad());
-//
-//	                // Agrega aquí la impresión de otros atributos del procesador si es necesario
-//	            }
-	            
-	            
+            
 	            for(Tarea lista:listaTareasCriticas) {
 	            	  System.out.println("Id: " + lista.getId());
 		                System.out.println("Nombre: " + lista.getNombre());
@@ -113,46 +82,23 @@ public class Servicios {
 		                System.out.println("Prioridad: " + listaNoCriticas.getPrioridad());
 		         }
 	 }
-	/*
-     * Expresar la complejidad temporal del servicio 1.
-     */
-	public Tarea servicio1(String ID) {
-//        for (Entry<String, Tarea> entry : tareas.entrySet()) {
-//        	if(entry.getKey().equals(ID)) {
-//        		return entry.getValue();
-//        	}
-//        }
 
+	 
+	public Tarea servicio1(String ID) {
 		return tareas.get(ID);
 	}
     
-    /*
-     * Expresar la complejidad temporal del servicio 2.
-     */
+
 	public List<Tarea> servicio2(boolean esCritica) {
-//		        List<Tarea> filtroTareas = new ArrayList<>();
-//		        for (Entry<String, Tarea> entry : tareas.entrySet()) {
-//		        	if(entry.getValue().isCritica()==esCritica) {
-//		        		filtroTareas.add(entry.getValue());
-//		        	}                                                                                                                                         
-//		        }
-//
-//			return filtroTareas;
 		if(esCritica) {
 			return this.listaTareasCriticas;
 		}
 		else {
 			return this.listaTareasNoCriticas;
 		}
-		
 	}
 		
-		
-		
-	
-    /*
-     * Expresar la complejidad temporal del servicio 3.
-     */
+
 	public List<Tarea> servicio3(int prioridadInferior, int prioridadSuperior) {
         List<Tarea> filtroTareasPorPrioridad = new ArrayList<>();
         for (Entry<String, Tarea> entry : tareas.entrySet()) {

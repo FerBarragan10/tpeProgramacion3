@@ -15,9 +15,9 @@ public class Main {
         System.out.println("la tarea con id==> " + ID +", es "+ servicios.servicio1(ID));
         
         
-        List<Tarea> filtroTareas = servicios.servicio2(true); // Llamando al método servicio2 donde se obtiene una lista de tareas segun si se 
+        List<Tarea> filtroTareas = servicios.servicio2(true); // Llamando al metodo servicio2 donde se obtiene una lista de tareas segun si se 
 
-        // Opción 1: Imprimir cada tarea por separado
+        // Opcion 1: Imprimir cada tarea por separado
     	System.out.println("servicio 2 tareas criticas o no");
 
         for (Tarea tarea : filtroTareas) {
@@ -26,9 +26,9 @@ public class Main {
         
         int prioridadMinima=13;
         int prioridadMaxima=65;
-        List<Tarea> filtroTareasPorPrioridad = servicios.servicio3(prioridadMinima,prioridadMaxima); // Llamando al método servicio2 donde se obtiene una lista de tareas segun si se 
+        List<Tarea> filtroTareasPorPrioridad = servicios.servicio3(prioridadMinima,prioridadMaxima); // Llamando al metodo servicio2 donde se obtiene una lista de tareas segun si se 
 
-        // Opción 1: Imprimir cada tarea por separado
+        // Opcion 1: Imprimir cada tarea por separado
     	System.out.println("servicio 3 por prioridad");
         for (Tarea tarea : filtroTareasPorPrioridad) {
             System.out.println(tarea); 

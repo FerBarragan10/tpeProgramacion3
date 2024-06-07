@@ -13,12 +13,13 @@ public class GreedyAssignment {
 	
 	 private List<Procesador> mejoresAsignaciones;
 	    private int mejorTiempo;
-	    int cantTareasCriticasMaximas=0;
-	    int cantTareasMaximas=0;
+	    private int cantTareasCriticasMaximas=0;
+	    private int cantTareasMaximas=0;
+	    private int cantMaximaDeCasos;
 	    public GreedyAssignment() {
-	        mejoresAsignaciones = new ArrayList<>();
-	        mejorTiempo = 120;
-	        
+	    	this.mejoresAsignaciones = new ArrayList<>();
+	        this.mejorTiempo = 200;
+	        this.cantMaximaDeCasos=0;
 	    }
 	    
 	    public int getTiempoFinal(){
@@ -33,7 +34,8 @@ public class GreedyAssignment {
 	    	}else{
 				System.out.println("no existe una solucion en greedy");
 	    	}
-	          
+            System.out.println("Se generaron: "+ cantMaximaDeCasos +" soluciones");
+            System.out.println("El tiempo maximo de Greedy es: "+ mejorTiempo);
 	        return mejoresAsignaciones;
 	    }
 	    
@@ -49,7 +51,6 @@ public class GreedyAssignment {
 	    			
 
 	    			procesadores.sort(Comparator.comparing(Procesador::getTiempoActual)); 
-//	    	        	for (int j = 0; j < tareasRestantes.size(); j++) {
 	    	        	if(!tareasRestantes.isEmpty()) {
 	    	        		
 	    	        		procesador= procesadores.get(i);
@@ -59,7 +60,7 @@ public class GreedyAssignment {
 	    	        			asignarTarea(asignacionActual, procesador, tarea);
 	    	        			procesador.getTareas().add(tarea);//pase la lista de procesadores para poder ordenarlos despues de agregarle la tarea
 	    	        			tareasRestantes.remove(tarea);
-	    	        			
+	    	        			cantMaximaDeCasos++;
 	    	        			
 	    	        		}
 	    	        		else{
@@ -75,10 +76,11 @@ public class GreedyAssignment {
 	    		
 	            	if (tareasRestantes.isEmpty()) {
 	    	            int tiempoFinal = calcularTiempoFinal(asignacionActual);
-	    	            //if (tiempoFinal < mejorTiempo) {
+	    	            if (tiempoFinal < mejorTiempo) {
 	    	                mejoresAsignaciones.addAll(asignacionActual);
 	    	                mejorTiempo = tiempoFinal;
-	    	            //} 
+	    	            } 
+
 	    	            
 	    	    	} 
 	    	
@@ -94,8 +96,7 @@ public class GreedyAssignment {
         		procActual=procesador;
         	}
 	        if (tarea.isCritica()) {
-	    		
-	        	 //for (Procesador procActual : asignacion) {
+
 	        	        for (Tarea tareaActual : procActual.getTareas()) {
 	        	            if (tareaActual.isCritica()) {
 	        	                totalTareasCriticas++;
@@ -104,20 +105,10 @@ public class GreedyAssignment {
 	        	        if (totalTareasCriticas > limiteTareasCriticas) {
 	        	        	return false;
 	        	        }
-	        	 //}
+	        	 
 	    	}
 	        // Segunda restricción: Los procesadores no refrigerados no podrán dedicar más de X tiempo de ejecución a las tareas asignadas.
 	        if (!procesador.refrigerado()) {
-	        	
-//	        	for (Tarea tareaActual : procActual.getTareas()) {
-//	     	                tiempoAsignado+=tareaActual.getTiempo();
-//	     	            }
-	     	       
-//	            int tiempoAsignado = asignacion.stream()
-//	                    .filter(p -> !p.equals(procesador)) // Excluye el tiempo del procesador actual
-//	                    .flatMap(p -> p.getTareas().stream())
-//	                    .mapToInt(Tarea::getTiempo)
-//	                    .sum();
 	        	
 	            if (procActual.getTiempoActual() + tarea.getTiempo() > limiteTiempoNoRefrigerado) {
 	                return false;
@@ -164,34 +155,10 @@ public class GreedyAssignment {
 	            
 	        }
 	    }
-
-//	    private void desasignarTarea(List<Procesador> asignacion, Procesador procesador, Tarea tarea) {
-//	        Procesador procesadorEnAsignacion = asignacion.stream()
-//	                                                      .filter(p -> p.equals(procesador))
-//	                                                      .findFirst()
-//	                                                      .orElse(null);
-//	        if (procesadorEnAsignacion != null) {
-//	            // Si el procesador está en la asignación, clonémoslo antes de eliminar la tarea
-//	            Procesador procesadorClonado = new Procesador(procesadorEnAsignacion.getId(), 
-//	                                                           procesadorEnAsignacion.getCodigo(), 
-//	                                                           procesadorEnAsignacion.refrigerado(), 
-//	                                                           procesadorEnAsignacion.getAnio());
-//	            procesadorClonado.getTareas().addAll(procesadorEnAsignacion.getTareas());
-//	            procesadorClonado.getTareas().remove(tarea);
-//	            asignacion.remove(procesadorEnAsignacion); // Eliminamos el procesador original de la asignación
-//	            if (!procesadorClonado.getTareas().isEmpty()) {
-//	                // Si el procesador clonado aún tiene tareas, lo volvemos a agregar a la asignación
-//	                asignacion.add(procesadorClonado);
-//	            }
-//	        }
-//	    }
-
-
-
-
+	    
+	    
 	    private int calcularTiempoFinal(List<Procesador> asignacion) {
 	    	int tiempoFinal = 0;
-	        //int mayorTiempo=0;
 	       
 	        for (Procesador procesador : asignacion) {
 	        	if(tiempoFinal==0){
@@ -201,12 +168,6 @@ public class GreedyAssignment {
 	        			tiempoFinal = procesador.getTiempoActual();
 	        		}
 	        	}
-//	        	for(Tarea tarea:procesador.getTareas()) {
-//	        		tiempoFinal+=tarea.getTiempo();
-//	        	}
-//	        	if(mayorTiempo<tiempoFinal) {
-//	        		mayorTiempo=tiempoFinal;
-//	        	}
 	        }
 	        return tiempoFinal;
 	    }
