@@ -1,0 +1,2 @@
+INDEX VERSION 1.127+C:\Users\manue\OneDrive\Desktop\TUDAI\Programacion_3\TPE\tpeProgramacion3\src\tpe\.metadata\.plugins\org.eclipse.jdt.core
+1691622722.index
