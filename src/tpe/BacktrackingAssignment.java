@@ -20,6 +20,13 @@ public class BacktrackingAssignment {
     	this.mejorTiempo = 200;
         this.cantMaximaDeCasos=0;
     }
+    
+    /*
+    La estrategia elegida para el metodo Backtracking fue que se generaran todas las combinaciones posibles entre los procesadores
+    y las tareas teniendo en cuenta las restricciones planteadas previamente en el enunciado del TPE. Contamos con un tiempo maximo
+    de ejecucion el cual intentamos reducir los mas que se pueda y gracias a esta estrategia vamos a obtener esa combiancion que
+    nos de el menor tiempo de ejecucion posible.  
+    */
 
     public List<Procesador> encontrarMejoresAsignaciones(List<Procesador> procesadores, List<Tarea> tareas, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
     	//Aqui obtenemos la cantidad de tareas criticas maxima que es el resultado de obtener el doble de procesadores + 1.
