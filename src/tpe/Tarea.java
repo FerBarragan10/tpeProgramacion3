@@ -6,9 +6,6 @@ public class Tarea {
     private int tiempo;
     private boolean critica;
     private int prioridad;
-    
-    
-    
 
     
 	public Tarea(String id, String nombre, int tiempo, boolean critica, int prioridad) {

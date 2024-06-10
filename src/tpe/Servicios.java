@@ -32,11 +32,11 @@ public class Servicios {
 
 
        reader.readTasks(pathTareas,this.tareas,listaTareasCriticas,listaTareasNoCriticas);
-		reader.readProcessors(pathProcesadores,this.procesadores);
+       reader.readProcessors(pathProcesadores,this.procesadores);
 
 
 		  int limiteTareasCriticas = 2; // Define el limite de tareas criticas por procesador
-	      int limiteTiempoNoRefrigerado = 100; // Define el limite de tiempo para procesadores no refrigerados
+	      int limiteTiempoNoRefrigerado = 160; // Define el limite de tiempo para procesadores no refrigerados
 
 	        // Crea una instancia de BacktrackingAssignment
 	      BacktrackingAssignment asignador = new BacktrackingAssignment();
@@ -55,12 +55,6 @@ public class Servicios {
 		  System.out.println("las mejor asignacion en greedy es : " +mejorAsignacion);
 	      
 	}
-	
-	
-	
-	
-	
-	
 	
 	 public void mostrarDatos() {   
 	            System.out.println("Tareas criticas:");

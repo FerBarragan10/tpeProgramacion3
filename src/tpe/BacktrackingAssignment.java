@@ -17,8 +17,8 @@ public class BacktrackingAssignment {
     
     public BacktrackingAssignment() {
     	this.mejoresAsignaciones = new ArrayList<>();
-    	this.mejorTiempo = 200;
         this.cantMaximaDeCasos=0;
+        this.mejorTiempo=200;
     }
     
     /*
@@ -44,19 +44,18 @@ public class BacktrackingAssignment {
     }
 
     private void backtrack(List<Procesador> asignacionActual, List<Procesador> procesadores, List<Tarea> tareasRestantes, int limiteTareasCriticas, int limiteTiempoNoRefrigerado,int cantTareasCriticasMaximas) {
+    	cantMaximaDeCasos++;
     		if (tareasRestantes.isEmpty()) {
                 int tiempoFinal = calcularTiempoFinal(asignacionActual);
-                if (tiempoFinal < mejorTiempo) {
                     mejoresAsignaciones.addAll(asignacionActual);
                     mejorTiempo = tiempoFinal;
-                }
+                
             }
             else {
             	  Tarea tarea = tareasRestantes.get(0);
 
                   for (Procesador procesador : procesadores) {
                       if (verificarRestricciones(asignacionActual, procesador, tarea, limiteTareasCriticas, limiteTiempoNoRefrigerado)) {
-                    	  cantMaximaDeCasos++;
 
                     	  asignarTarea(asignacionActual, procesador, tarea);
 
