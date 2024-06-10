@@ -18,7 +18,6 @@ public class GreedyAssignment {
 	    private int cantMaximaDeCasos;
 	    public GreedyAssignment() {
 	    	this.mejoresAsignaciones = new ArrayList<>();
-	        this.mejorTiempo = 200;//va?
 	        this.cantMaximaDeCasos=0;
 	    }
 	    
@@ -56,8 +55,7 @@ public class GreedyAssignment {
 	    		while(!tareasRestantes.isEmpty()) {
 	    			
 
-	    			procesadores.sort(Comparator.comparing(Procesador::getTiempoActual)); 
-//	    	        	for (int j = 0; j < tareasRestantes.size(); j++) {
+	    			procesadores.sort(Comparator.comparing(Procesador::getTiempoActual));
 	    	        	if(!tareasRestantes.isEmpty()) {
 	    	        		
 	    	        		procesador= procesadores.get(i);
@@ -104,7 +102,6 @@ public class GreedyAssignment {
         	}
 	        if (tarea.isCritica()) {
 	    		
-	        	 //for (Procesador procActual : asignacion) {
 	        	        for (Tarea tareaActual : procActual.getTareas()) {
 	        	            if (tareaActual.isCritica()) {
 	        	                totalTareasCriticas++;
@@ -113,20 +110,10 @@ public class GreedyAssignment {
 	        	        if (totalTareasCriticas > limiteTareasCriticas) {
 	        	        	return false;
 	        	        }
-	        	 //}
+	        	 
 	    	}
 	        // Segunda restricción: Los procesadores no refrigerados no podrán dedicar más de X tiempo de ejecución a las tareas asignadas.
 	        if (!procesador.refrigerado()) {
-	        	
-//	        	for (Tarea tareaActual : procActual.getTareas()) {
-//	     	                tiempoAsignado+=tareaActual.getTiempo();
-//	     	            }
-	     	       
-//	            int tiempoAsignado = asignacion.stream()
-//	                    .filter(p -> !p.equals(procesador)) // Excluye el tiempo del procesador actual
-//	                    .flatMap(p -> p.getTareas().stream())
-//	                    .mapToInt(Tarea::getTiempo)
-//	                    .sum();
 	        	
 	            if (procActual.getTiempoActual() + tarea.getTiempo() > limiteTiempoNoRefrigerado) {
 	                return false;
@@ -174,27 +161,6 @@ public class GreedyAssignment {
 	        }
 	    }
 
-//	    private void desasignarTarea(List<Procesador> asignacion, Procesador procesador, Tarea tarea) {
-//	        Procesador procesadorEnAsignacion = asignacion.stream()
-//	                                                      .filter(p -> p.equals(procesador))
-//	                                                      .findFirst()
-//	                                                      .orElse(null);
-//	        if (procesadorEnAsignacion != null) {
-//	            // Si el procesador está en la asignación, clonémoslo antes de eliminar la tarea
-//	            Procesador procesadorClonado = new Procesador(procesadorEnAsignacion.getId(), 
-//	                                                           procesadorEnAsignacion.getCodigo(), 
-//	                                                           procesadorEnAsignacion.refrigerado(), 
-//	                                                           procesadorEnAsignacion.getAnio());
-//	            procesadorClonado.getTareas().addAll(procesadorEnAsignacion.getTareas());
-//	            procesadorClonado.getTareas().remove(tarea);
-//	            asignacion.remove(procesadorEnAsignacion); // Eliminamos el procesador original de la asignación
-//	            if (!procesadorClonado.getTareas().isEmpty()) {
-//	                // Si el procesador clonado aún tiene tareas, lo volvemos a agregar a la asignación
-//	                asignacion.add(procesadorClonado);
-//	            }
-//	        }
-//	    }
-
 
 	    public int getTiempoFinal(){
 	    	return this.calcularTiempoFinal(mejoresAsignaciones);
@@ -213,12 +179,6 @@ public class GreedyAssignment {
 	        			tiempoFinal = procesador.getTiempoActual();
 	        		}
 	        	}
-//	        	for(Tarea tarea:procesador.getTareas()) {
-//	        		tiempoFinal+=tarea.getTiempo();
-//	        	}
-//	        	if(mayorTiempo<tiempoFinal) {
-//	        		mayorTiempo=tiempoFinal;
-//	        	}
 	        }
 	        return tiempoFinal;
 	    }
