@@ -63,31 +63,33 @@ public class Servicios {
 	
 	
 	 public void mostrarDatos() {   
-	            System.out.println("Tareas criticas:");
-            
-	            for(Tarea lista:listaTareasCriticas) {
-	            	  System.out.println("Id: " + lista.getId());
-		                System.out.println("Nombre: " + lista.getNombre());
-		                System.out.println("Tiempo: " + lista.getTiempo());
-		                System.out.println("Critica: " + lista.isCritica());
-		                System.out.println("Prioridad: " + lista.getPrioridad());
-		         }
-	            System.out.println("Tareas NO criticas:");
-
-	            for(Tarea listaNoCriticas:listaTareasNoCriticas) {
-	            	  System.out.println("Id: " + listaNoCriticas.getId());
-		                System.out.println("Nombre: " + listaNoCriticas.getNombre());
-		                System.out.println("Tiempo: " + listaNoCriticas.getTiempo());
-		                System.out.println("Critica: " + listaNoCriticas.isCritica());
-		                System.out.println("Prioridad: " + listaNoCriticas.getPrioridad());
-		         }
+//	            System.out.println("Tareas criticas:");
+//            
+//	            for(Tarea lista:listaTareasCriticas) {
+//	            	  System.out.println("Id: " + lista.getId());
+//		                System.out.println("Nombre: " + lista.getNombre());
+//		                System.out.println("Tiempo: " + lista.getTiempo());
+//		                System.out.println("Critica: " + lista.isCritica());
+//		                System.out.println("Prioridad: " + lista.getPrioridad());
+//		         }
+//	            System.out.println("Tareas NO criticas:");
+//
+//	            for(Tarea listaNoCriticas:listaTareasNoCriticas) {
+//	            	  System.out.println("Id: " + listaNoCriticas.getId());
+//		                System.out.println("Nombre: " + listaNoCriticas.getNombre());
+//		                System.out.println("Tiempo: " + listaNoCriticas.getTiempo());
+//		                System.out.println("Critica: " + listaNoCriticas.isCritica());
+//		                System.out.println("Prioridad: " + listaNoCriticas.getPrioridad());
+//		         }
 	 }
 
-	 
+	//la complejidad para este servicio es O(1)
+
 	public Tarea servicio1(String ID) {
 		return tareas.get(ID);
 	}
     
+	//la complejidad para este servicio es O(1)
 
 	public List<Tarea> servicio2(boolean esCritica) {
 		if(esCritica) {
@@ -98,7 +100,7 @@ public class Servicios {
 		}
 	}
 		
-
+//la complejidad para este servicio es O(n)
 	public List<Tarea> servicio3(int prioridadInferior, int prioridadSuperior) {
         List<Tarea> filtroTareasPorPrioridad = new ArrayList<>();
         for (Entry<String, Tarea> entry : tareas.entrySet()) {
