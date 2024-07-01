@@ -12,7 +12,7 @@ import java.util.Map;
 public class GreedyAssignment {
 	
 	 private List<Procesador> mejoresAsignaciones;
-	    private int mejorTiempo;
+	    private int tiempoFinal;
 	    private int cantTareasCriticasMaximas=0;
 	    private int cantTareasMaximas=0;
 	    private int cantMaximaDeCasos;
@@ -40,7 +40,7 @@ public class GreedyAssignment {
 				System.out.println("no existe una solucion en greedy");
 	    	}
             System.out.println("Se generaron: "+ cantMaximaDeCasos +" soluciones");
-            System.out.println("El tiempo maximo de Greedy es: "+ mejorTiempo);
+            System.out.println("El tiempo maximo de Greedy es: "+ tiempoFinal);
 	        return mejoresAsignaciones;
 	    }
 	    
@@ -80,11 +80,11 @@ public class GreedyAssignment {
 	    			
 	    		
 	            	if (tareasRestantes.isEmpty()) {
-	    	            int tiempoFinal = calcularTiempoFinal(asignacionActual);
-	    	            if (tiempoFinal < mejorTiempo) {
+	    	            this.tiempoFinal = calcularTiempoFinal(asignacionActual);
+	    	            
 	    	                mejoresAsignaciones.addAll(asignacionActual);
-	    	                mejorTiempo = tiempoFinal;
-	    	            } 
+	    	               return;
+	    	            
 
 	    	            
 	    	    	} 

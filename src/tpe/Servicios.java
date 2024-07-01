@@ -17,7 +17,7 @@ import tpe.utils.CSVReader;
  * de implementación.
  */
 public class Servicios {
-	 private HashMap<String,Procesador> procesadores;
+	 	private HashMap<String,Procesador> procesadores;
 	    private HashMap<String,Tarea> tareas;
 	    private LinkedList<Tarea> listaTareasCriticas;
 	    private LinkedList<Tarea> listaTareasNoCriticas;
@@ -25,64 +25,15 @@ public class Servicios {
 	    
 	public Servicios(String pathProcesadores, String pathTareas){
 		CSVReader reader = new CSVReader();
-        this.tareas = new HashMap<>();
-        this.procesadores = new HashMap<>();
+		this.procesadores = new HashMap<>();
+		this.tareas = new HashMap<>();
         this.listaTareasCriticas=new LinkedList<>();
         this.listaTareasNoCriticas=new LinkedList<>();
 
 
-       reader.readTasks(pathTareas,this.tareas,listaTareasCriticas,listaTareasNoCriticas);
-		reader.readProcessors(pathProcesadores,this.procesadores);
-
-
-		  int limiteTareasCriticas = 2; // Define el limite de tareas criticas por procesador
-	      int limiteTiempoNoRefrigerado = 100; // Define el limite de tiempo para procesadores no refrigerados
-
-	        // Crea una instancia de BacktrackingAssignment
-	      BacktrackingAssignment asignador = new BacktrackingAssignment();
-	        // Llama al metodo para encontrar las mejores asignaciones
-	        
-	      List<Procesador> mejoresAsignaciones = asignador.encontrarMejoresAsignaciones(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
-
-	      System.out.println("las mejores asignaciones son: " +mejoresAsignaciones);
-	        	
-	        // Crea una instancia de GreedyAssignment
-		  GreedyAssignment asignadorGreddy = new GreedyAssignment();
-		    // Llama al metodo para encontrar las mejores asignaciones
-		        
-		  List<Procesador> mejorAsignacion= asignadorGreddy.asginarGreedy(new ArrayList<>(procesadores.values()), new ArrayList<>(tareas.values()), limiteTareasCriticas, limiteTiempoNoRefrigerado);
-
-		  System.out.println("las mejor asignacion en greedy es : " +mejorAsignacion);
-	      
+        reader.readTasks(pathTareas,this.tareas,listaTareasCriticas,listaTareasNoCriticas);
+		reader.readProcessors(pathProcesadores,this.procesadores);	      
 	}
-	
-	
-	
-	
-	
-	
-	
-	 public void mostrarDatos() {   
-	            System.out.println("Tareas criticas:");
-            
-	            for(Tarea lista:listaTareasCriticas) {
-	            	  System.out.println("Id: " + lista.getId());
-		                System.out.println("Nombre: " + lista.getNombre());
-		                System.out.println("Tiempo: " + lista.getTiempo());
-		                System.out.println("Critica: " + lista.isCritica());
-		                System.out.println("Prioridad: " + lista.getPrioridad());
-		         }
-	            System.out.println("Tareas NO criticas:");
-
-	            for(Tarea listaNoCriticas:listaTareasNoCriticas) {
-	            	  System.out.println("Id: " + listaNoCriticas.getId());
-		                System.out.println("Nombre: " + listaNoCriticas.getNombre());
-		                System.out.println("Tiempo: " + listaNoCriticas.getTiempo());
-		                System.out.println("Critica: " + listaNoCriticas.isCritica());
-		                System.out.println("Prioridad: " + listaNoCriticas.getPrioridad());
-		         }
-	 }
-
 	 
 	public Tarea servicio1(String ID) {
 		return tareas.get(ID);
@@ -108,5 +59,21 @@ public class Servicios {
         }
 
 	return filtroTareasPorPrioridad;
+	}
+	
+	
+	
+	public HashMap<String,Procesador> obtenerProcesadores(){
+		HashMap<String,Procesador> retorno = new HashMap<>();
+			retorno.putAll(procesadores);
+		
+			return retorno;
+	}
+	
+	public HashMap<String,Tarea> obtenerTareas(){
+		HashMap<String,Tarea> retorno = new HashMap<>();
+			retorno.putAll(tareas);
+		
+			return retorno;
 	}
 }

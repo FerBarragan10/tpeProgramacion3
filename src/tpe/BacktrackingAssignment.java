@@ -17,7 +17,7 @@ public class BacktrackingAssignment {
     
     public BacktrackingAssignment() {
     	this.mejoresAsignaciones = new ArrayList<>();
-    	this.mejorTiempo = 200;
+    	this.mejorTiempo = 1000;
         this.cantMaximaDeCasos=0;
     }
     
