@@ -34,11 +34,15 @@ public class Servicios {
         reader.readTasks(pathTareas,this.tareas,listaTareasCriticas,listaTareasNoCriticas);
 		reader.readProcessors(pathProcesadores,this.procesadores);	      
 	}
-	 
+
+
+	//la complejidad para este servicio es O(1)
+
 	public Tarea servicio1(String ID) {
 		return tareas.get(ID);
 	}
     
+	//la complejidad para este servicio es O(1)
 
 	public List<Tarea> servicio2(boolean esCritica) {
 		if(esCritica) {
@@ -49,7 +53,7 @@ public class Servicios {
 		}
 	}
 		
-
+//la complejidad para este servicio es O(n)
 	public List<Tarea> servicio3(int prioridadInferior, int prioridadSuperior) {
         List<Tarea> filtroTareasPorPrioridad = new ArrayList<>();
         for (Entry<String, Tarea> entry : tareas.entrySet()) {

@@ -12,9 +12,7 @@ import java.util.Map;
 public class GreedyAssignment {
 	
 	 private List<Procesador> mejoresAsignaciones;
-	    private int tiempoFinal;
 	    private int cantTareasCriticasMaximas=0;
-	    private int cantTareasMaximas=0;
 	    private int cantMaximaDeCasos;
 	    public GreedyAssignment() {
 	    	this.mejoresAsignaciones = new ArrayList<>();
@@ -32,17 +30,28 @@ public class GreedyAssignment {
 	    
 
 	    public List<Procesador> asginarGreedy(List<Procesador> procesadores, List<Tarea> tareas, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
-	    	cantTareasCriticasMaximas=(cantidadMaximaTareasCriticas(procesadores)*2)+1;
-	    	
-	    	if(cantTareasCriticasMaximas>cantTareasMaximas(tareas)){
-	    		greedy(new ArrayList<>(), new ArrayList<>(procesadores), new ArrayList<>(tareas), limiteTareasCriticas, limiteTiempoNoRefrigerado, cantTareasCriticasMaximas);	    		
-	    	}else{
-				System.out.println("no existe una solucion en greedy");
-	    	}
-            System.out.println("Se generaron: "+ cantMaximaDeCasos +" soluciones");
-            System.out.println("El tiempo maximo de Greedy es: "+ tiempoFinal);
-	        return mejoresAsignaciones;
+
+	        cantTareasCriticasMaximas = (cantidadMaximaTareasCriticas(procesadores) * 2) + 1;
+
+	            if (cantTareasCriticasMaximas > cantTareasMaximas(tareas)) {
+	                greedy(new ArrayList<>(), new ArrayList<>(procesadores), new ArrayList<>(tareas), limiteTareasCriticas, limiteTiempoNoRefrigerado, cantTareasCriticasMaximas);
+	               
+	            } else {
+	                System.out.println("No existe una solucion en greedy");
+	            }
+	            if(!mejoresAsignaciones.isEmpty()) {
+	            	 System.out.println("Se generaron: " + cantMaximaDeCasos + " soluciones");
+		              //  System.out.println("El tiempo maximo de Greedy es: " + mejorTiempo);
+		                
+		                return mejoresAsignaciones;
+	            }
+	            else {
+	                System.out.println("No existe una solucion en greedy");
+
+	            }
+	        return null;
 	    }
+
 	    
 	    
 
@@ -56,7 +65,7 @@ public class GreedyAssignment {
 	    			
 
 	    			procesadores.sort(Comparator.comparing(Procesador::getTiempoActual));
-	    	        	if(!tareasRestantes.isEmpty()) {
+	    	        	if(!tareasRestantes.isEmpty() && i<procesadores.size()) {
 	    	        		
 	    	        		procesador= procesadores.get(i);
 	    	        		tarea = tareasRestantes.get(0);
@@ -66,53 +75,47 @@ public class GreedyAssignment {
 	    	        			procesador.getTareas().add(tarea);//pase la lista de procesadores para poder ordenarlos despues de agregarle la tarea
 	    	        			tareasRestantes.remove(tarea);
 	    	        			cantMaximaDeCasos++;
-	    	        			
+	    	        			i=0;
 	    	        		}
 	    	        		else{
 	    	        			procesador = procesadores.get(i++);
 	    	        		}
 	    	        	}
-	    	        	else {
-    	        			return;
+	    	        	else  if(i==procesadores.size()){
+	    					return;
     	        		}
 	    	        
 	    		}    
 	    			
 	    		
 	            	if (tareasRestantes.isEmpty()) {
-	    	            this.tiempoFinal = calcularTiempoFinal(asignacionActual);
-	    	            
-	    	                mejoresAsignaciones.addAll(asignacionActual);
-	    	               return;
-	    	            
 
-	    	            
+	    	                mejoresAsignaciones.addAll(asignacionActual);
 	    	    	} 
-	    	
 	    }
 	    
 
 	    
 	    private boolean verificarRestricciones(List<Procesador> asignacion, Procesador procesador, Tarea tarea, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
-	        // Primera restricción: Ningún procesador podrá ejecutar más de 2 tareas críticas.
+	        // Primera restricciï¿½n: Ningï¿½n procesador podrï¿½ ejecutar mï¿½s de 2 tareas crï¿½ticas.
 	        int totalTareasCriticas=0;
 	        Procesador procActual = getProcesador(asignacion,procesador);
         	if (procActual==null) {
         		procActual=procesador;
         	}
 	        if (tarea.isCritica()) {
-	    		
+
 	        	        for (Tarea tareaActual : procActual.getTareas()) {
 	        	            if (tareaActual.isCritica()) {
 	        	                totalTareasCriticas++;
 	        	            }
 	        	        }
-	        	        if (totalTareasCriticas > limiteTareasCriticas) {
+	        	        if (totalTareasCriticas >= limiteTareasCriticas) {
 	        	        	return false;
 	        	        }
 	        	 
 	    	}
-	        // Segunda restricción: Los procesadores no refrigerados no podrán dedicar más de X tiempo de ejecución a las tareas asignadas.
+	        // Segunda restricciï¿½n: Los procesadores no refrigerados no podrï¿½n dedicar mï¿½s de X tiempo de ejecuciï¿½n a las tareas asignadas.
 	        if (!procesador.refrigerado()) {
 	        	
 	            if (procActual.getTiempoActual() + tarea.getTiempo() > limiteTiempoNoRefrigerado) {
@@ -140,17 +143,17 @@ public class GreedyAssignment {
 	                                                      .orElse(null);
 	        
 	        if (procesadorEnAsignacion != null) {
-	            // Si el procesador ya está en la asignación, clonémoslo antes de agregar la tarea
+	            // Si el procesador ya estï¿½ en la asignaciï¿½n, clonï¿½moslo antes de agregar la tarea
 	            Procesador procesadorClonado = new Procesador(procesadorEnAsignacion.getId(), 
 	                                                           procesadorEnAsignacion.getCodigo(), 
 	                                                           procesadorEnAsignacion.refrigerado(), 
 	                                                           procesadorEnAsignacion.getAnio());
 	            procesadorClonado.getTareas().addAll(procesadorEnAsignacion.getTareas());
 	            procesadorClonado.getTareas().add(tarea);
-	            asignacion.remove(procesadorEnAsignacion); // Eliminamos el procesador original de la asignación
+	            asignacion.remove(procesadorEnAsignacion); // Eliminamos el procesador original de la asignaciï¿½n
 	            asignacion.add(procesadorClonado); // Agregamos el procesador clonado con la nueva tarea
 	        } else {
-	            // Si el procesador no está en la asignación, simplemente agreguemos el nuevo procesador con la tarea
+	            // Si el procesador no estï¿½ en la asignaciï¿½n, simplemente agreguemos el nuevo procesador con la tarea
 	            Procesador nuevoProcesador = new Procesador(procesador.getId(), 
 	                                                         procesador.getCodigo(), 
 	                                                         procesador.refrigerado(), 
