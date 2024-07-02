@@ -17,7 +17,7 @@ public class BacktrackingAssignment {
     
     public BacktrackingAssignment() {
     	this.mejoresAsignaciones = new ArrayList<>();
-    	this.mejorTiempo = 1000;
+    	this.mejorTiempo = 0;
         this.cantMaximaDeCasos=0;
     }
     
@@ -39,17 +39,31 @@ public class BacktrackingAssignment {
 			System.out.println("no existe una solucion en greedy");
     	}
     	System.out.println("Se generaron: "+ cantMaximaDeCasos +" soluciones");
-        System.out.println("El tiempo de backtracking maximo es: "+ mejorTiempo);
+    	if(mejorTiempo>0) {
+            System.out.println("El tiempo de backtracking maximo es: "+ mejorTiempo);
+
+    	}
+    	else {
+    		System.out.println("No hay solución");
+    	}
         return mejoresAsignaciones;
     }
 
     private void backtrack(List<Procesador> asignacionActual, List<Procesador> procesadores, List<Tarea> tareasRestantes, int limiteTareasCriticas, int limiteTiempoNoRefrigerado,int cantTareasCriticasMaximas) {
     		if (tareasRestantes.isEmpty()) {
                 int tiempoFinal = calcularTiempoFinal(asignacionActual);
-                if (tiempoFinal < mejorTiempo) {
+                if(mejorTiempo==0) {
+                	mejorTiempo=tiempoFinal;
                     mejoresAsignaciones.addAll(asignacionActual);
-                    mejorTiempo = tiempoFinal;
+
                 }
+                else {
+                	 if (tiempoFinal < mejorTiempo) {
+                         mejoresAsignaciones.addAll(asignacionActual);
+                         mejorTiempo = tiempoFinal;
+                     }
+                }
+               
             }
             else {
             	  Tarea tarea = tareasRestantes.get(0);
@@ -73,33 +87,36 @@ public class BacktrackingAssignment {
     }
 
     private boolean verificarRestricciones(List<Procesador> asignacion, Procesador procesador, Tarea tarea, int limiteTareasCriticas, int limiteTiempoNoRefrigerado) {
-        // Primera restriccion: Ningun procesador podra ejecutar mas de 2 tareas criticas.
+        // Primera restricci�n: Ning�n procesador podr� ejecutar m�s de 2 tareas cr�ticas.
         int totalTareasCriticas=0;
-    	Procesador procActual=getProcesador(asignacion,procesador);
+        Procesador procActual = getProcesador(asignacion,procesador);
     	if (procActual==null) {
     		procActual=procesador;
     	}
-    	if (tarea.isCritica()) {
-    		
-    		totalTareasCriticas=procActual.cantidadTareasCriticas();
-	        if (totalTareasCriticas > limiteTareasCriticas) {
-	        	return false;
-	        }
+        if (tarea.isCritica()) {
+
+        	        for (Tarea tareaActual : procActual.getTareas()) {
+        	            if (tareaActual.isCritica()) {
+        	                totalTareasCriticas++;
+        	            }
+        	        }
+        	        if (totalTareasCriticas >= limiteTareasCriticas) {
+        	        	return false;
+        	        }
+        	 
     	}
-        // Segunda restriccion: Los procesadores no refrigerados no podran dedicar mas de X tiempo de ejecucion a las tareas asignadas.
+        // Segunda restricci�n: Los procesadores no refrigerados no podr�n dedicar m�s de X tiempo de ejecuci�n a las tareas asignadas.
         if (!procesador.refrigerado()) {
-        	int tiempoAsignado=0;
         	
-        	for (Tarea tareaActual : procActual.getTareas()) {
-     	                tiempoAsignado+=tareaActual.getTiempo();
-     	    }
-            if (tiempoAsignado + tarea.getTiempo() > limiteTiempoNoRefrigerado) {
+            if (procActual.getTiempoActual() + tarea.getTiempo() > limiteTiempoNoRefrigerado) {
                 return false;
             }
         }
         return true;
     }
-  
+
+    
+ 
 
 	private Procesador getProcesador(List<Procesador> asignacion,Procesador procesador) {
     	for (Procesador current: asignacion) {

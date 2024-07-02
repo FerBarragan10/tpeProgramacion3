@@ -40,9 +40,7 @@ public class GreedyAssignment {
 	                System.out.println("No existe una solucion en greedy");
 	            }
 	            if(!mejoresAsignaciones.isEmpty()) {
-	            	 System.out.println("Se generaron: " + cantMaximaDeCasos + " soluciones");
-		              //  System.out.println("El tiempo maximo de Greedy es: " + mejorTiempo);
-		                
+	            	 System.out.println("Se generaron: " + cantMaximaDeCasos + " soluciones");		                
 		                return mejoresAsignaciones;
 	            }
 	            else {
